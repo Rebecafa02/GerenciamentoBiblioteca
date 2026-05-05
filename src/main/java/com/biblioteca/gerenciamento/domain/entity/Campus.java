@@ -1,6 +1,8 @@
 package com.biblioteca.gerenciamento.domain.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
@@ -11,7 +13,8 @@ import lombok.*;
 @Entity
 public class Campus {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String nome;
     private String cidade;
 

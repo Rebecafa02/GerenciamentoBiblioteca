@@ -1,6 +1,8 @@
 package com.biblioteca.gerenciamento.domain.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +20,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Turma {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @NotNull(message = "Ano letivo é obrigatório")
     @Min(value = 2000, message = "Ano letivo inválido")
     private Integer anoLetivo;
