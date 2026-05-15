@@ -1,5 +1,6 @@
 package com.biblioteca.gerenciamento.service;
 
+import com.biblioteca.gerenciamento.config.exceptions.ResourceNotFoundException;
 import com.biblioteca.gerenciamento.domain.dto.TurmaCreateDto;
 import com.biblioteca.gerenciamento.domain.dto.TurmaUpdateDto;
 import com.biblioteca.gerenciamento.domain.entity.Campus;
@@ -25,18 +26,18 @@ public class TurmaService {
 
         return turmaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Turma não encontrada"));
+                        new ResourceNotFoundException("Turma não encontrada"));
     }
 
     public Turma create(TurmaCreateDto dto) {
 
         Curso curso = cursoRepository.findById(dto.getIdCurso())
                 .orElseThrow(() ->
-                        new RuntimeException("Curso não encontrado"));
+                        new ResourceNotFoundException("Curso não encontrado"));
 
         Campus campus = campusRepository.findById(dto.getIdCampus())
                 .orElseThrow(() ->
-                        new RuntimeException("Campus não encontrado"));
+                        new ResourceNotFoundException("Campus não encontrado"));
 
         Turma turma = Turma.builder()
                 .anoLetivo(dto.getAnoLetivo())
@@ -64,7 +65,7 @@ public class TurmaService {
 
             Curso curso = cursoRepository.findById(dto.getIdCurso())
                     .orElseThrow(() ->
-                            new RuntimeException("Curso não encontrado"));
+                            new ResourceNotFoundException("Curso não encontrado"));
 
             turma.setCurso(curso);
         }
@@ -73,7 +74,7 @@ public class TurmaService {
 
             Campus campus = campusRepository.findById(dto.getIdCampus())
                     .orElseThrow(() ->
-                            new RuntimeException("Campus não encontrado"));
+                            new ResourceNotFoundException("Campus não encontrado"));
 
             turma.setCampus(campus);
         }
