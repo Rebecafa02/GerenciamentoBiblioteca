@@ -12,11 +12,12 @@ import java.util.Optional;
 
 @Service
 public class CampusService {
+
     @Autowired
     private CampusRepository campusRepository;
 
     public Optional<Campus> findById(int id) {
-        return ResponseEntity.ok(campusRepository.findById(id)).getBody();
+        return campusRepository.findById(id);
     }
 
     public ResponseEntity<Campus> create(Campus campus) {
@@ -24,18 +25,24 @@ public class CampusService {
     }
 
     public ResponseEntity<Campus> update(int id, Campus campus) {
-        Campus oldCampus = campusRepository.findById(id).get();
-        if (!Objects.equals(oldCampus.getNome(), campus.getNome())) {
-            oldCampus.setNome(campus.getNome());
+        Optional<Campus> optional = campusRepository.findById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        if (!Objects.equals(oldCampus.getCidade(), campus.getCidade())){
-            oldCampus.setCidade(campus.getCidade());
+        Campus existing = optional.get();
+        if (!Objects.equals(existing.getNome(), campus.getNome())) {
+            existing.setNome(campus.getNome());
         }
-
-        return ResponseEntity.ok(campusRepository.save(oldCampus));
+        if (!Objects.equals(existing.getCidade(), campus.getCidade())) {
+            existing.setCidade(campus.getCidade());
+        }
+        return ResponseEntity.ok(campusRepository.save(existing));
     }
 
     public ResponseEntity<Void> delete(Integer id) {
+        if (!campusRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         campusRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

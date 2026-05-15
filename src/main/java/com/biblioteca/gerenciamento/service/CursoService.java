@@ -12,11 +12,12 @@ import java.util.Optional;
 
 @Service
 public class CursoService {
+
     @Autowired
     private CursoRepository cursoRepository;
 
     public Optional<Curso> findById(int id) {
-        return ResponseEntity.ok(cursoRepository.findById(id)).getBody();
+        return cursoRepository.findById(id);
     }
 
     public ResponseEntity<Curso> create(Curso curso) {
@@ -24,15 +25,21 @@ public class CursoService {
     }
 
     public ResponseEntity<Curso> update(int id, Curso curso) {
-        Curso oldCurso = cursoRepository.findById(id).get();
-        if (!Objects.equals(oldCurso.getNome_curso(), curso.getNome_curso())) {
-            oldCurso.setNome_curso(curso.getNome_curso());
+        Optional<Curso> optional = cursoRepository.findById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        
-        return ResponseEntity.ok(cursoRepository.save(oldCurso));
+        Curso existing = optional.get();
+        if (!Objects.equals(existing.getNome_curso(), curso.getNome_curso())) {
+            existing.setNome_curso(curso.getNome_curso());
+        }
+        return ResponseEntity.ok(cursoRepository.save(existing));
     }
 
     public ResponseEntity<Void> delete(Integer id) {
+        if (!cursoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         cursoRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
