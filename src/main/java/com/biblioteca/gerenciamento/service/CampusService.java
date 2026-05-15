@@ -2,6 +2,7 @@ package com.biblioteca.gerenciamento.service;
 
 import com.biblioteca.gerenciamento.domain.entity.Campus;
 import com.biblioteca.gerenciamento.repository.CampusRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,43 +12,60 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CampusService {
 
-    @Autowired
-    private CampusRepository campusRepository;
+    private final CampusRepository campusRepository;
 
-    public Optional<Campus> findById(int id) {
-        return campusRepository.findById(id);
+    public Campus findById(Integer id) {
+        return campusRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Campus não encontrado"));
     }
 
-    public ResponseEntity<Campus> create(Campus campus) {
-        return ResponseEntity.ok(campusRepository.save(campus));
+    public Campus create(Campus campus) {
+        return campusRepository.save(campus);
     }
 
-    public ResponseEntity<Campus> update(int id, Campus campus) {
-        Optional<Campus> optional = campusRepository.findById(id);
-        if (optional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Campus existing = optional.get();
-        if (!Objects.equals(existing.getNome(), campus.getNome())) {
-            existing.setNome(campus.getNome());
-        }
-        if (!Objects.equals(existing.getCidade(), campus.getCidade())) {
-            existing.setCidade(campus.getCidade());
-        }
-        return ResponseEntity.ok(campusRepository.save(existing));
+    public Campus update(Integer id, Campus campus) {
+
+        Campus oldCampus = findById(id);
+
+        oldCampus.setNome(campus.getNome());
+        oldCampus.setCidade(campus.getCidade());
+
+        return campusRepository.save(oldCampus);
     }
 
-    public ResponseEntity<Void> delete(Integer id) {
-        if (!campusRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        campusRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+    public void delete(Integer id) {
+
+        Campus campus = findById(id);
+
+        campusRepository.delete(campus);
     }
 
-    public ResponseEntity<List<Campus>> findAll() {
-        return ResponseEntity.ok(campusRepository.findAll());
+    public List<Campus> findAll(String nome, String cidade) {
+
+        boolean hasNome = nome != null && !nome.isBlank();
+        boolean hasCidade = cidade != null && !cidade.isBlank();
+
+        if (hasNome && hasCidade) {
+            return campusRepository
+                    .findByNomeContainingIgnoreCaseAndCidadeContainingIgnoreCase(
+                            nome,
+                            cidade
+                    );
+        }
+
+        if (hasNome) {
+            return campusRepository
+                    .findByNomeContainingIgnoreCase(nome);
+        }
+
+        if (hasCidade) {
+            return campusRepository
+                    .findByCidadeContainingIgnoreCase(cidade);
+        }
+
+        return campusRepository.findAll();
     }
 }

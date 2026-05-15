@@ -1,9 +1,8 @@
 package com.biblioteca.gerenciamento.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Curso{
+@Table(name = "curso")
+public class Curso {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome_curso;
+
+    @NotBlank(message = "Nome do curso é obrigatório")
+    @Size(min = 3, max = 150, message = "O nome do curso deve ter entre 3 e 150 caracteres")
+    @Column(name = "nome_curso", nullable = false)
+    private String nomeCurso;
 }
