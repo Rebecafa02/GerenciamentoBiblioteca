@@ -2,42 +2,57 @@ package com.biblioteca.gerenciamento.controller;
 
 import com.biblioteca.gerenciamento.domain.entity.Curso;
 import com.biblioteca.gerenciamento.service.CursoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping ("/api/curso")
+@RequestMapping("/api/curso")
+@RequiredArgsConstructor
 public class CursoController {
 
-    @Autowired
-    private CursoService cursoService;
+    private final CursoService cursoService;
 
     @PostMapping
-    ResponseEntity<Curso> createcurso(@RequestBody Curso curso) {
-        return cursoService.create(curso);
+    public ResponseEntity<Curso> createCurso(
+            @Valid @RequestBody Curso curso) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(cursoService.create(curso));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Curso> updatecurso(@PathVariable int id, @RequestBody Curso curso) {
-        return cursoService.update(id, curso);
+    public ResponseEntity<Curso> updateCurso(
+            @PathVariable Integer id,
+            @Valid @RequestBody Curso curso) {
+
+        return ResponseEntity.ok(cursoService.update(id, curso));
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deletecurso(@PathVariable int id) {
-        return cursoService.delete(id);
+    public ResponseEntity<Void> deleteCurso(@PathVariable Integer id) {
+
+        cursoService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    Optional<Curso> findcursoById(@PathVariable int id) {
-        return cursoService.findById(id);
+    public ResponseEntity<Curso> findCursoById(@PathVariable Integer id) {
+
+        return ResponseEntity.ok(cursoService.findById(id));
     }
 
     @GetMapping
-    ResponseEntity<List<Curso>> findAllcurso() {
-        return cursoService.findAll();
+    public ResponseEntity<List<Curso>> findAllCurso(
+            @RequestParam(required = false) String nomeCurso) {
+
+        return ResponseEntity.ok(
+                cursoService.findAll(nomeCurso)
+        );
     }
 }

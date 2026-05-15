@@ -3,7 +3,7 @@ package com.biblioteca.gerenciamento.domain.dto;
 import lombok.Data;
 
 @Data
-public class TurmaUpdateDto {
+public class TurmaCreateDto {
 
     private Integer anoLetivo;
 
