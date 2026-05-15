@@ -199,4 +199,33 @@ public class EmprestimoService {
             );
         }
     }
+
+    public void delete(Integer id) {
+
+        Emprestimo emprestimo = findById(id);
+
+        if (StatusEmprestimo.EMPRESTADO.equals(
+                emprestimo.getStatusEmprestimo())) {
+
+            Estoque estoque = estoqueRepository.findByLivroId(
+                    emprestimo.getLivro().getId()
+            ).orElseThrow(() ->
+                    new ResourceNotFoundException(
+                            "Estoque não encontrado"
+                    ));
+
+            estoque.setQtdDisponivel(
+                    estoque.getQtdDisponivel() + 1
+            );
+
+            aumentarQuantidadePorCondicao(
+                    estoque,
+                    emprestimo.getCondicaoEntrega()
+            );
+
+            estoqueRepository.save(estoque);
+        }
+
+        emprestimoRepository.delete(emprestimo);
+    }
 }
