@@ -1,5 +1,6 @@
 package com.biblioteca.gerenciamento.service;
 
+import com.biblioteca.gerenciamento.config.exceptions.ResourceNotFoundException;
 import com.biblioteca.gerenciamento.domain.entity.Curso;
 import com.biblioteca.gerenciamento.repository.CursoRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class CursoService {
 
         return cursoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Curso não encontrado"));
+                        new ResourceNotFoundException("Curso não encontrado"));
     }
 
     public Curso create(Curso curso) {

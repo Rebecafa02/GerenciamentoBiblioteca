@@ -1,5 +1,6 @@
 package com.biblioteca.gerenciamento.service;
 
+import com.biblioteca.gerenciamento.config.exceptions.ResourceNotFoundException;
 import com.biblioteca.gerenciamento.domain.entity.Campus;
 import com.biblioteca.gerenciamento.repository.CampusRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class CampusService {
 
     public Campus findById(Integer id) {
         return campusRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Campus não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Campus não encontrado"));
     }
 
     public Campus create(Campus campus) {
