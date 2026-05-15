@@ -27,10 +27,18 @@ public class EstoqueController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Estoque>> findAll() {
+    public ResponseEntity<List<Estoque>> findAll(
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String disciplina,
+            @RequestParam(required = false) String anoEscolar
+    ) {
 
         return ResponseEntity.ok(
-                estoqueService.findAll()
+                estoqueService.findAll(
+                        titulo,
+                        disciplina,
+                        anoEscolar
+                )
         );
     }
 

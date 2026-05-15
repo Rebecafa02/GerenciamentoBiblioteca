@@ -48,8 +48,17 @@ public class EstoqueService {
         return estoqueRepository.save(estoque);
     }
 
-    public List<Estoque> findAll() {
-        return estoqueRepository.findAll();
+    public List<Estoque> findAll(
+            String titulo,
+            String disciplina,
+            String anoEscolar
+    ) {
+
+        return estoqueRepository.findByFiltros(
+                titulo == null ? "" : titulo,
+                disciplina == null ? "" : disciplina,
+                anoEscolar == null ? "" : anoEscolar
+        );
     }
 
     public Estoque findById(Integer id) {
