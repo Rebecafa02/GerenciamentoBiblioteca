@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -41,4 +43,12 @@ public class Turma {
     @ManyToOne
     @JoinColumn(name = "id_campus", nullable = false)
     private Campus campus;
+
+    @ManyToMany
+    @JoinTable(
+        name = "turma_materia",
+        joinColumns = @JoinColumn(name = "turma_id"),
+        inverseJoinColumns = @JoinColumn(name = "materia_id")
+    )
+    private List<Materia> materias;
 }

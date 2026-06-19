@@ -1,6 +1,7 @@
 package com.biblioteca.gerenciamento.domain.dto;
 
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class TurmaCreateDto {
@@ -12,4 +13,6 @@ public class TurmaCreateDto {
     private Integer idCurso;
 
     private Integer idCampus;
+
+    private List<Integer> materiasIds;
 }

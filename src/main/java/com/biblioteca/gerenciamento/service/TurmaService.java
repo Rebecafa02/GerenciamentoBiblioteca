@@ -9,6 +9,8 @@ import com.biblioteca.gerenciamento.domain.entity.Turma;
 import com.biblioteca.gerenciamento.repository.CampusRepository;
 import com.biblioteca.gerenciamento.repository.CursoRepository;
 import com.biblioteca.gerenciamento.repository.TurmaRepository;
+import com.biblioteca.gerenciamento.domain.entity.Materia;
+import com.biblioteca.gerenciamento.repository.MateriaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class TurmaService {
     private final TurmaRepository turmaRepository;
     private final CursoRepository cursoRepository;
     private final CampusRepository campusRepository;
+    private final MateriaRepository materiaRepository;
 
     public Turma findById(Integer id) {
 
@@ -45,6 +48,11 @@ public class TurmaService {
                 .curso(curso)
                 .campus(campus)
                 .build();
+
+        if (dto.getMateriasIds() != null && !dto.getMateriasIds().isEmpty()) {
+            List<Materia> materias = materiaRepository.findAllById(dto.getMateriasIds());
+            turma.setMaterias(materias);
+        }
 
         return turmaRepository.save(turma);
     }
@@ -77,6 +85,11 @@ public class TurmaService {
                             new ResourceNotFoundException("Campus não encontrado"));
 
             turma.setCampus(campus);
+        }
+
+        if (dto.getMateriasIds() != null) {
+            List<Materia> materias = materiaRepository.findAllById(dto.getMateriasIds());
+            turma.setMaterias(materias);
         }
 
         return turmaRepository.save(turma);
